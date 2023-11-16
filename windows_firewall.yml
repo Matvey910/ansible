@@ -1,0 +1,23 @@
+---
+- name: Add firewall rules
+  hosts: windows
+  tasks:
+  - name: Firewall rule to allow SSH on TCP port 22
+    win_firewall_rule:
+      name: SSH
+      localport: 22
+      action: allow
+      direction: in
+      protocol: tcp
+      state: present
+      enabled: yes
+  - name: Firewall rule to allow RDP on TCP port 3389
+    win_firewall_rule:
+      name: Remote Desktop
+      localport: 3389
+      action: allow
+      direction: in
+      protocol: tcp
+      profiles: private
+      state: present
+      enabled: yes

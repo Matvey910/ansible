@@ -1,0 +1,47 @@
+#建立公司Windows檔案伺服器
+---
+- name: 打造檔案伺服器
+  hosts: windows
+  tasks:
+    - name: 新增admin管理員帳戶
+      win_user:
+        name: admin
+        password: 2Password!
+        groups: Administrators
+        update_password: on_create
+        password_never_expires: yes
+        user_cannot_change_password: no
+        state: present
+#---------安裝資源管理員-------
+    - name: 安裝資源管理員
+      win_feature:
+        name:
+          - FS-FileServer
+          - FS-Resource-Manager
+        state: present
+#----------啟用帳戶---------
+    - name: 啟用來賓帳戶-guest
+      win_user:
+        name: Guest
+        state: present
+        account_disabled: no
+#------創造目錄------------------
+    - name: 創造目錄
+      win_file:
+        path: "C:/share"
+        state: directory
+#-------分享資料夾-------
+    - name: 建立分享資料夾
+      win_share:
+        name: "share"
+        description: Windows share
+        path: "C:/share"
+        list: yes
+        full: Administrators
+        read: Everyone
+        state: present
+#-------拷貝整個目錄階層------
+    - name: 拷貝目錄資料
+      win_copy:
+        src: /root/share
+        dest: C:\

@@ -1,0 +1,29 @@
+---
+- name: Install Apache server
+  hosts: redhat
+  become: yes
+  tasks:
+  - name: Install latest Apache web server
+    dnf:
+      name: httpd
+      state: latest
+  - name: Apache enabled and running
+    service:
+      name: httpd
+      enabled: true
+      state: started
+  - name: Allow Http and https rule
+    firewalld:
+      permanent: yes
+      immediate: yes
+      service: "{{ item }}"
+      state: enabled
+    with_items:
+     - http
+     - https
+  - name: copy home page
+    copy:
+      src: index.html
+      dest: /var/www/html
+      mode: u=rw,g=r,o=r
+

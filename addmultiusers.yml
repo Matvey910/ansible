@@ -1,0 +1,14 @@
+---
+- name: Create multiple Windows user accounts
+  hosts: windows
+  tasks:
+    - name: Create user accounts
+      win_user:
+        name: "{{ item.username }}"
+        password: "{{ item.password }}"
+        state: present
+      with_items:
+        - { username: "user1", password: "2Password!" }
+        - { username: "user2", password: "2Password!" }
+        - { username: "user3", password: "2Password!" }
+        # Add more user accounts as needed
